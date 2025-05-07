@@ -1,0 +1,74 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<section class="hero-section text-center">
+    <div class="container">
+        <h1 class="display-4 mb-4">Save a Life</h1>
+        <p class="lead mb-4">Meet our adorable pets waiting for their forever homes in our adoption platform.</p>
+        <a href="{% url 'core:pets_list' %}" class="btn btn-primary btn-lg">Discover Our Pets</a>
+    </div>
+</section>
+
+<div class="container">
+    <div class="row mb-5">
+        <div class="col-md-4 text-center">
+            <div class="feature-icon">
+                <i class="fas fa-heart"></i>
+            </div>
+            <h3>Loving Homes</h3>
+            <p>We're looking for safe and loving homes for our pets.</p>
+        </div>
+        <div class="col-md-4 text-center">
+            <div class="feature-icon">
+                <i class="fas fa-hand-holding-medical"></i>
+            </div>
+            <h3>Health Checks</h3>
+            <p>All our pets have been checked by veterinarians.</p>
+        </div>
+        <div class="col-md-4 text-center">
+            <div class="feature-icon">
+                <i class="fas fa-home"></i>
+            </div>
+            <h3>Easy Adoption</h3>
+            <p>Simple application process to meet your new friend.</p>
+        </div>
+    </div>
+
+    <h2 class="text-center mb-4">Pets Available for Adoption</h2>
+    <div class="row">
+        {% for pet in pets %}
+        <div class="col-md-4">
+            <div class="card h-100">
+                <img src="{{ pet.photo.url }}" class="card-img-top" alt="{{ pet.name }}" style="height: 250px; object-fit: cover;">
+                <div class="card-body">
+                    <h5 class="card-title">{{ pet.name }}</h5>
+                    <p class="card-text">
+                        <small class="text-muted">
+                            <i class="fas fa-paw me-1"></i> {{ pet.get_species_display }}<br>
+                            <i class="fas fa-venus-mars me-1"></i> {{ pet.get_gender_display }}<br>
+                            <i class="fas fa-birthday-cake me-1"></i> {{ pet.age }} years old
+                        </small>
+                    </p>
+                    <p class="card-text">{{ pet.description|truncatewords:20 }}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <a href="#" class="btn btn-primary">View Details</a>
+                        <div>
+                            {% if pet.is_vaccinated %}
+                            <span class="badge bg-success"><i class="fas fa-syringe"></i> Vaccinated</span>
+                            {% endif %}
+                            {% if pet.is_neutered %}
+                            <span class="badge bg-info"><i class="fas fa-check"></i> Neutered</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center">
+            <p>No pets are currently available for adoption.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %} 
