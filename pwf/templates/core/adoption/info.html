@@ -1,0 +1,412 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 text-white mb-4">Give a Pet a Forever Home</h1>
+                <p class="lead text-white-50 mb-4">Every pet deserves a loving home. Start your adoption journey today and make a difference in a furry friend's life.</p>
+                {% if user.is_authenticated %}
+                <a href="{% url 'core:pets_list' %}" class="btn btn-light btn-lg">
+                    <i class="fas fa-paw me-2"></i>Find Your Perfect Pet
+                </a>
+                {% else %}
+                <div class="d-flex gap-3">
+                    <a href="{% url 'signup' %}" class="btn btn-light btn-lg">
+                        <i class="fas fa-user-plus me-2"></i>Get Started
+                    </a>
+                    <a href="{% url 'login' %}" class="btn btn-outline-light btn-lg">
+                        <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+            <div class="col-lg-6 d-none d-lg-block">
+                <img src="https://images.unsplash.com/photo-1450778869180-41d0601e046e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80" alt="Happy pets" class="img-fluid rounded-circle hero-image">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Statistics Section -->
+<div class="stats-section py-5">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-3 mb-4">
+                <div class="stat-card">
+                    <i class="fas fa-home fa-3x text-primary mb-3"></i>
+                    <h2 class="counter">500+</h2>
+                    <p class="text-muted">Pets Adopted</p>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="stat-card">
+                    <i class="fas fa-heart fa-3x text-danger mb-3"></i>
+                    <h2 class="counter">1000+</h2>
+                    <p class="text-muted">Happy Families</p>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="stat-card">
+                    <i class="fas fa-clinic-medical fa-3x text-success mb-3"></i>
+                    <h2 class="counter">100%</h2>
+                    <p class="text-muted">Vaccinated</p>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="stat-card">
+                    <i class="fas fa-users fa-3x text-info mb-3"></i>
+                    <h2 class="counter">50+</h2>
+                    <p class="text-muted">Staff Members</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Process Section -->
+<div class="process-section py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5">Adoption Process</h2>
+        <div class="row">
+            <div class="col-lg-3 mb-4">
+                <div class="process-card">
+                    <div class="process-icon">
+                        <i class="fas fa-search"></i>
+                        <span class="step-number">1</span>
+                    </div>
+                    <h4>Browse Pets</h4>
+                    <p>Look through our available pets and find your perfect match.</p>
+                    <a href="{% url 'core:pets_list' %}" class="btn btn-outline-primary btn-sm">View Pets</a>
+                </div>
+            </div>
+            <div class="col-lg-3 mb-4">
+                <div class="process-card">
+                    <div class="process-icon">
+                        <i class="fas fa-file-alt"></i>
+                        <span class="step-number">2</span>
+                    </div>
+                    <h4>Apply</h4>
+                    <p>Submit your adoption application with required information.</p>
+                </div>
+            </div>
+            <div class="col-lg-3 mb-4">
+                <div class="process-card">
+                    <div class="process-icon">
+                        <i class="fas fa-comments"></i>
+                        <span class="step-number">3</span>
+                    </div>
+                    <h4>Meet & Greet</h4>
+                    <p>Schedule a meeting with your potential new family member.</p>
+                </div>
+            </div>
+            <div class="col-lg-3 mb-4">
+                <div class="process-card">
+                    <div class="process-icon">
+                        <i class="fas fa-heart"></i>
+                        <span class="step-number">4</span>
+                    </div>
+                    <h4>Take Home</h4>
+                    <p>Complete the adoption and welcome your new pet home!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Adoption Fees -->
+<div class="fees-section py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">Adoption Fees</h2>
+        <div class="row justify-content-center">
+            <div class="col-md-4 mb-4">
+                <div class="fee-card">
+                    <div class="fee-icon">
+                        <i class="fas fa-dog"></i>
+                    </div>
+                    <h3>Dogs</h3>
+                    <div class="price">$200-300</div>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-check text-success me-2"></i>Spay/Neuter</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Vaccinations</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Microchip</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Health Check</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="fee-card featured">
+                    <div class="fee-icon">
+                        <i class="fas fa-cat"></i>
+                    </div>
+                    <h3>Cats</h3>
+                    <div class="price">$100-150</div>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-check text-success me-2"></i>Spay/Neuter</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Vaccinations</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Microchip</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Health Check</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- FAQ Section -->
+<div class="faq-section py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5">Frequently Asked Questions</h2>
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="accordion" id="adoptionFAQ">
+                    <div class="accordion-item">
+                        <h3 class="accordion-header">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                                What are the requirements to adopt?
+                            </button>
+                        </h3>
+                        <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#adoptionFAQ">
+                            <div class="accordion-body">
+                                You must be at least 18 years old, have valid identification, and provide proof of residence. We also conduct a brief interview to ensure the pet will be going to a suitable home.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h3 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                                How long does the adoption process take?
+                            </button>
+                        </h3>
+                        <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#adoptionFAQ">
+                            <div class="accordion-body">
+                                The process typically takes 1-3 days, depending on the completion of necessary paperwork and home visits if required.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h3 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                                What if the pet doesn't adjust well to my home?
+                            </button>
+                        </h3>
+                        <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#adoptionFAQ">
+                            <div class="accordion-body">
+                                We offer a 2-week adjustment period. If things don't work out, you can return the pet and we'll help you find a better match.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Testimonials Section -->
+<div class="testimonials-section py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">Happy Families</h2>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="testimonial-card">
+                    <div class="testimonial-image">
+                        <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9" alt="Sarah Johnson" class="img-fluid rounded-circle">
+                    </div>
+                    <div class="testimonial-content">
+                        <p class="testimonial-text">"Adopting Max was the best decision we ever made. The process was smooth, and the staff was incredibly helpful!"</p>
+                        <h5 class="testimonial-name">Sarah Johnson</h5>
+                        <p class="testimonial-pet">Adopted Max (Dog)</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="testimonial-card">
+                    <div class="testimonial-image">
+                        <img src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6" alt="John Smith" class="img-fluid rounded-circle">
+                    </div>
+                    <div class="testimonial-content">
+                        <p class="testimonial-text">"Luna has brought so much joy to our family. We couldn't be happier with our adoption experience!"</p>
+                        <h5 class="testimonial-name">John Smith</h5>
+                        <p class="testimonial-pet">Adopted Luna (Cat)</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="testimonial-card">
+                    <div class="testimonial-image">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb" alt="Emily Davis" class="img-fluid rounded-circle">
+                    </div>
+                    <div class="testimonial-content">
+                        <p class="testimonial-text">"The staff made sure we found the perfect match for our family. Bella has been a wonderful addition!"</p>
+                        <h5 class="testimonial-name">Emily Davis</h5>
+                        <p class="testimonial-pet">Adopted Bella (Dog)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Hero Section */
+.hero-section {
+    background: linear-gradient(135deg, var(--primary-color) 0%, #2E7D32 100%);
+    padding: 100px 0;
+    margin-bottom: 0;
+}
+
+.hero-image {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* Statistics Section */
+.stat-card {
+    padding: 2rem;
+    border-radius: 1rem;
+    background: white;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+}
+
+.counter {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+/* Process Section */
+.process-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    height: 100%;
+    transition: transform 0.3s;
+}
+
+.process-card:hover {
+    transform: translateY(-5px);
+}
+
+.process-icon {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 1.5rem;
+    background: var(--primary-color);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.process-icon i {
+    font-size: 2rem;
+    color: white;
+}
+
+.step-number {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    width: 30px;
+    height: 30px;
+    background: white;
+    border: 2px solid var(--primary-color);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+/* Fee Cards */
+.fee-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s;
+}
+
+.fee-card:hover {
+    transform: translateY(-5px);
+}
+
+.fee-card.featured {
+    border: 2px solid var(--primary-color);
+}
+
+.fee-icon {
+    font-size: 3rem;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+.price {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--primary-color);
+    margin: 1rem 0;
+}
+
+/* FAQ Section */
+.accordion-button:not(.collapsed) {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.accordion-button:focus {
+    box-shadow: 0 0 0 0.25rem rgba(76, 175, 80, 0.25);
+}
+
+/* Testimonials */
+.testimonial-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    height: 100%;
+    transition: transform 0.3s;
+}
+
+.testimonial-card:hover {
+    transform: translateY(-5px);
+}
+
+.testimonial-image img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    margin-bottom: 1.5rem;
+    border: 3px solid var(--primary-color);
+}
+
+.testimonial-text {
+    font-style: italic;
+    color: #666;
+    margin-bottom: 1rem;
+}
+
+.testimonial-name {
+    color: var(--primary-color);
+    margin-bottom: 0.25rem;
+}
+
+.testimonial-pet {
+    color: #666;
+    font-size: 0.9rem;
+}
+</style>
+{% endblock %} 

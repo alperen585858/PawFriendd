@@ -1,74 +1,741 @@
 {% extends 'core/base.html' %}
+{% load static %}
 
 {% block content %}
-<section class="hero-section text-center">
+<!-- Hero Section -->
+<div class="hero-section">
     <div class="container">
-        <h1 class="display-4 mb-4">Save a Life</h1>
-        <p class="lead mb-4">Meet our adorable pets waiting for their forever homes in our adoption platform.</p>
-        <a href="{% url 'core:pets_list' %}" class="btn btn-primary btn-lg">Discover Our Pets</a>
-    </div>
-</section>
-
-<div class="container">
-    <div class="row mb-5">
-        <div class="col-md-4 text-center">
-            <div class="feature-icon">
-                <i class="fas fa-heart"></i>
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h1 class="hero-title mb-4">Find Your Perfect <span class="highlight">Companion</span></h1>
+                <p class="hero-subtitle mb-5">Give a loving home to a pet in need. Every adoption makes a difference.</p>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'core:pets_list' %}" class="btn btn-primary btn-hero">
+                        <i class="fas fa-paw me-2"></i>Browse Available Pets
+                    </a>
+                {% endif %}
             </div>
-            <h3>Loving Homes</h3>
-            <p>We're looking for safe and loving homes for our pets.</p>
-        </div>
-        <div class="col-md-4 text-center">
-            <div class="feature-icon">
-                <i class="fas fa-hand-holding-medical"></i>
-            </div>
-            <h3>Health Checks</h3>
-            <p>All our pets have been checked by veterinarians.</p>
-        </div>
-        <div class="col-md-4 text-center">
-            <div class="feature-icon">
-                <i class="fas fa-home"></i>
-            </div>
-            <h3>Easy Adoption</h3>
-            <p>Simple application process to meet your new friend.</p>
         </div>
     </div>
+</div>
 
-    <h2 class="text-center mb-4">Pets Available for Adoption</h2>
-    <div class="row">
-        {% for pet in pets %}
-        <div class="col-md-4">
-            <div class="card h-100">
-                <img src="{{ pet.photo.url }}" class="card-img-top" alt="{{ pet.name }}" style="height: 250px; object-fit: cover;">
-                <div class="card-body">
-                    <h5 class="card-title">{{ pet.name }}</h5>
-                    <p class="card-text">
-                        <small class="text-muted">
-                            <i class="fas fa-paw me-1"></i> {{ pet.get_species_display }}<br>
-                            <i class="fas fa-venus-mars me-1"></i> {{ pet.get_gender_display }}<br>
-                            <i class="fas fa-birthday-cake me-1"></i> {{ pet.age }} years old
-                        </small>
-                    </p>
-                    <p class="card-text">{{ pet.description|truncatewords:20 }}</p>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <a href="#" class="btn btn-primary">View Details</a>
-                        <div>
-                            {% if pet.is_vaccinated %}
-                            <span class="badge bg-success"><i class="fas fa-syringe"></i> Vaccinated</span>
-                            {% endif %}
-                            {% if pet.is_neutered %}
-                            <span class="badge bg-info"><i class="fas fa-check"></i> Neutered</span>
-                            {% endif %}
+<!-- Featured Pets Section -->
+<div class="container py-5">
+    <div class="section-header mb-5">
+        <h2 class="section-title">Featured Pets</h2>
+        <p class="section-subtitle">Meet our adorable pets waiting for their forever homes</p>
+        {% if user.is_authenticated %}
+            <a href="{% url 'core:pets_list' %}" class="btn btn-outline-primary btn-lg mt-3">
+                <i class="fas fa-list me-2"></i>View All Pets
+            </a>
+        {% endif %}
+    </div>
+
+    {% if pets %}
+        <div class="row">
+            {% for pet in pets %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 pet-card">
+                    <div class="card-img-container">
+                        {% if pet.photo %}
+                            <img src="{{ pet.photo.url }}" class="card-img-top" alt="{{ pet.name }}">
+                        {% else %}
+                            <div class="no-photo-placeholder">
+                                <i class="fas fa-paw"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+                    {% if user.is_authenticated %}
+                        <!-- Full content for authenticated users -->
+                        <div class="card-body">
+                            <h3 class="pet-name">{{ pet.name }}</h3>
+                            <p class="pet-info">{{ pet.breed }} • {{ pet.age }} years old</p>
+                            <div class="pet-badges mb-3">
+                                <span class="badge badge-species">{{ pet.get_species_display }}</span>
+                                <span class="badge badge-gender">{{ pet.get_gender_display }}</span>
+                                {% if pet.is_vaccinated %}
+                                    <span class="badge badge-success">Vaccinated</span>
+                                {% endif %}
+                                {% if pet.is_neutered %}
+                                    <span class="badge badge-success">Neutered</span>
+                                {% endif %}
+                            </div>
+                            <p class="pet-description">{{ pet.description|truncatewords:30 }}</p>
+                            <div class="mt-3">
+                                <a href="{% url 'core:adoption_apply' pet.id %}" class="btn btn-adopt w-100">
+                                    <i class="fas fa-heart me-2"></i>Adopt Me
+                                </a>
+                            </div>
                         </div>
+                    {% else %}
+                        <!-- Limited content for non-authenticated users -->
+                        <div class="card-body">
+                            <div class="pet-preview">
+                                <h3 class="pet-name">{{ pet.name }}</h3>
+                                <p class="pet-info">{{ pet.breed }}</p>
+                                <div class="pet-badges mb-3">
+                                    <span class="badge badge-species">{{ pet.get_species_display }}</span>
+                                </div>
+                                <div class="blur-overlay">
+                                    <div class="preview-content">
+                                        <i class="fas fa-lock mb-3"></i>
+                                        <p class="preview-text">Sign in to view more details and adopt</p>
+                                        <a href="{% url 'accounts:login' %}?next={{ request.path }}" class="btn btn-light btn-sm">
+                                            <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            No pets are currently available for adoption.
+        </div>
+    {% endif %}
+</div>
+
+<!-- Features Section -->
+<div class="features-section py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <h3 class="feature-title">Love & Care</h3>
+                    <p class="feature-text">All our pets receive the best care and attention while waiting for their forever homes.</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-clinic-medical"></i>
+                    </div>
+                    <h3 class="feature-title">Health Checked</h3>
+                    <p class="feature-text">Every pet is thoroughly health-checked and vaccinated before adoption.</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-home"></i>
+                    </div>
+                    <h3 class="feature-title">Perfect Match</h3>
+                    <p class="feature-text">We help you find the perfect pet that matches your lifestyle and preferences.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Statistics Section -->
+<div class="stats-section py-5 bg-light">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-3 mb-4">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-home"></i>
+                    </div>
+                    <h3 class="stat-number">500+</h3>
+                    <p class="stat-label">Mutlu Yuva</p>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <h3 class="stat-number">1000+</h3>
+                    <p class="stat-label">Kurtarılan Hayvan</p>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-user-friends"></i>
+                    </div>
+                    <h3 class="stat-number">5000+</h3>
+                    <p class="stat-label">Mutlu Aile</p>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-hands-helping"></i>
+                    </div>
+                    <h3 class="stat-number">100+</h3>
+                    <p class="stat-label">Gönüllü</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- How It Works Section -->
+<div class="how-it-works-section py-5">
+    <div class="container">
+        <h2 class="section-title text-center mb-5">Nasıl Çalışır?</h2>
+        <div class="row">
+            <div class="col-md-3">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <div class="step-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <h4>Keşfet</h4>
+                    <p>Sizin için en uygun dostunuzu bulun</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <div class="step-icon">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <h4>Başvur</h4>
+                    <p>Basit başvuru formunu doldurun</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <div class="step-icon">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <h4>Tanış</h4>
+                    <p>Yeni dostunuzla tanışın</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="step-card">
+                    <div class="step-number">4</div>
+                    <div class="step-icon">
+                        <i class="fas fa-home"></i>
+                    </div>
+                    <h4>Yuva Ol</h4>
+                    <p>Yeni ailenize hoş geldiniz!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Success Stories Section -->
+<div class="success-stories-section py-5 bg-light">
+    <div class="container">
+        <h2 class="section-title text-center mb-5">Mutlu Sonla Biten Hikayeler</h2>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="story-card">
+                    <div class="story-image">
+                        <img src="https://images.unsplash.com/photo-1450778869180-41d0601e046e" alt="Success Story 1" class="img-fluid">
+                    </div>
+                    <div class="story-content">
+                        <h4>Luna'nın Hikayesi</h4>
+                        <p>"Luna ile tanıştığımız gün hayatımız değişti. Şimdi ailemizin vazgeçilmez bir parçası!"</p>
+                        <span class="story-author">- Ayşe & Mehmet</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="story-card">
+                    <div class="story-image">
+                        <img src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba" alt="Success Story 2" class="img-fluid">
+                    </div>
+                    <div class="story-content">
+                        <h4>Max'in Yolculuğu</h4>
+                        <p>"Sokaktan kurtardığımız Max, şimdi evimizin neşe kaynağı. Her gün bize mutluluk katıyor!"</p>
+                        <span class="story-author">- Can & Elif</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="story-card">
+                    <div class="story-image">
+                        <img src="https://images.unsplash.com/photo-1543466835-00a7907e9de1" alt="Success Story 3" class="img-fluid">
+                    </div>
+                    <div class="story-content">
+                        <h4>Bella'nın Dönüşümü</h4>
+                        <p>"Bella'yı sahiplendiğimizde çok ürkekti. Şimdi ise sevgi dolu bir arkadaş!"</p>
+                        <span class="story-author">- Zeynep & Ali</span>
                     </div>
                 </div>
             </div>
         </div>
-        {% empty %}
-        <div class="col-12 text-center">
-            <p>No pets are currently available for adoption.</p>
-        </div>
-        {% endfor %}
     </div>
 </div>
+
+<!-- Support Section -->
+<div class="support-section py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h2 class="section-title">Bize Destek Olun</h2>
+                <p class="lead mb-4">Her katkınız bir can dostumuzun hayatını değiştiriyor. Siz de bu değişimin parçası olun!</p>
+                <div class="support-options">
+                    <div class="support-option mb-3">
+                        <i class="fas fa-hand-holding-heart"></i>
+                        <span>Bağış Yapın</span>
+                    </div>
+                    <div class="support-option mb-3">
+                        <i class="fas fa-hands-helping"></i>
+                        <span>Gönüllü Olun</span>
+                    </div>
+                    <div class="support-option mb-3">
+                        <i class="fas fa-home"></i>
+                        <span>Geçici Yuva Olun</span>
+                    </div>
+                </div>
+                <a href="#" class="btn btn-primary btn-lg mt-4">
+                    <i class="fas fa-heart me-2"></i>Destek Ol
+                </a>
+            </div>
+            <div class="col-lg-6">
+                <img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb" alt="Support" class="img-fluid rounded support-image">
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Hero Section */
+.hero-section {
+    background: linear-gradient(135deg, var(--primary-color) 0%, #2E7D32 100%);
+    padding: 120px 0;
+    margin-bottom: 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('https://images.unsplash.com/photo-1450778869180-41d0601e046e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80') center/cover;
+    opacity: 0.1;
+}
+
+.hero-title {
+    font-size: 4rem;
+    font-weight: 800;
+    color: white;
+    line-height: 1.2;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.hero-title .highlight {
+    color: #FDD835;
+    text-shadow: 3px 3px 6px rgba(0,0,0,0.4);
+}
+
+.hero-subtitle {
+    font-size: 1.4rem;
+    color: rgba(255,255,255,0.95);
+    max-width: 600px;
+    line-height: 1.6;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+}
+
+.btn-hero {
+    padding: 1rem 2.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-radius: 50px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+}
+
+.btn-hero:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+}
+
+.btn-hero.btn-primary {
+    background: #fff;
+    color: #2E7D32;
+    border: none;
+}
+
+.btn-hero.btn-primary:hover {
+    background: #f8f9fa;
+    color: #1B5E20;
+}
+
+.btn-hero.btn-outline-light {
+    border: 2px solid #fff;
+    background: transparent;
+}
+
+.btn-hero.btn-outline-light:hover {
+    background: rgba(255,255,255,0.1);
+}
+
+/* Section Headers */
+.section-header {
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.section-title {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #2E7D32;
+    margin-bottom: 1rem;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+}
+
+.section-subtitle {
+    font-size: 1.2rem;
+    color: #666;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+/* Pet Cards */
+.pet-card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.pet-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.card-img-container {
+    height: 250px;
+    overflow: hidden;
+    position: relative;
+}
+
+.card-img-top {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.no-photo-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
+}
+
+.no-photo-placeholder i {
+    font-size: 4rem;
+    color: #bdbdbd;
+}
+
+.pet-name {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #2E7D32;
+    margin-bottom: 0.5rem;
+}
+
+.pet-info {
+    font-size: 1.1rem;
+    color: #666;
+    margin-bottom: 1rem;
+}
+
+.pet-badges {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.badge {
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border-radius: 25px;
+}
+
+.badge-species {
+    background-color: #1565C0;
+    color: white;
+}
+
+.badge-gender {
+    background-color: #6A1B9A;
+    color: white;
+}
+
+.badge-success {
+    background-color: #2E7D32;
+    color: white;
+}
+
+.pet-description {
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+.btn-adopt {
+    background: linear-gradient(135deg, #2E7D32 0%, #1B5E20 100%);
+    color: white;
+    padding: 1rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 50px;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.btn-adopt:hover {
+    background: linear-gradient(135deg, #1B5E20 0%, #2E7D32 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(46,125,50,0.3);
+}
+
+/* Pet Preview for Non-authenticated Users */
+.pet-preview {
+    position: relative;
+    padding: 2rem;
+    min-height: 300px;
+}
+
+.blur-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255,255,255,0.9);
+    backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.preview-content {
+    padding: 2rem;
+}
+
+.preview-content i {
+    font-size: 3rem;
+    color: #2E7D32;
+    margin-bottom: 1rem;
+}
+
+.preview-text {
+    font-size: 1.3rem;
+    color: #333;
+    margin-bottom: 1.5rem;
+}
+
+/* Features Section */
+.features-section {
+    background-color: #f8f9fa;
+    padding: 80px 0;
+}
+
+.feature-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+.feature-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 1.5rem;
+    background: linear-gradient(135deg, #2E7D32 0%, #1B5E20 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.feature-icon i {
+    font-size: 2rem;
+    color: white;
+}
+
+.feature-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 1rem;
+}
+
+.feature-text {
+    color: #666;
+    line-height: 1.6;
+}
+
+/* Statistics Section */
+.stat-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+}
+
+.stat-icon {
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    color: #666;
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+/* How It Works Section */
+.step-card {
+    position: relative;
+    background: white;
+    padding: 2rem;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.step-card:hover {
+    transform: translateY(-5px);
+}
+
+.step-number {
+    position: absolute;
+    top: -15px;
+    right: -15px;
+    width: 40px;
+    height: 40px;
+    background: var(--primary-color);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+.step-icon {
+    font-size: 2rem;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+/* Success Stories Section */
+.story-card {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.story-card:hover {
+    transform: translateY(-5px);
+}
+
+.story-image {
+    height: 200px;
+    overflow: hidden;
+}
+
+.story-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.story-content {
+    padding: 1.5rem;
+}
+
+.story-content h4 {
+    color: #333;
+    margin-bottom: 1rem;
+}
+
+.story-author {
+    color: var(--primary-color);
+    font-style: italic;
+}
+
+/* Support Section */
+.support-section {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+.support-options {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.support-option {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 1.2rem;
+    color: #333;
+}
+
+.support-option i {
+    color: var(--primary-color);
+    font-size: 1.5rem;
+}
+
+.support-image {
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .stat-card, .step-card, .story-card {
+        margin-bottom: 2rem;
+    }
+    
+    .support-image {
+        margin-top: 2rem;
+    }
+}
+</style>
 {% endblock %} 

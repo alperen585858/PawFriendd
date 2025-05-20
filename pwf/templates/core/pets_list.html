@@ -1,298 +1,168 @@
 {% extends 'core/base.html' %}
+{% load static %}
 
 {% block content %}
-<div class="container mt-4">
-    <h1 class="text-center mb-4">Pets Available for Adoption</h1>
-    
-    <!-- Enhanced Search Bar -->
-    <div class="row mb-4">
-        <div class="col-md-8 mx-auto">
-            <form method="get" class="d-flex">
-                <input type="hidden" name="species" value="{{ selected_species }}">
-                <input type="hidden" name="gender" value="{{ selected_gender }}">
-                <input type="hidden" name="age" value="{{ selected_age }}">
-                <input type="hidden" name="is_vaccinated" value="{{ selected_vaccinated }}">
-                <input type="hidden" name="is_neutered" value="{{ selected_neutered }}">
-                <input type="hidden" name="sort" value="{{ selected_sort }}">
-                <input type="hidden" name="view" value="{{ view_type }}">
-                <div class="input-group">
-                    <span class="input-group-text bg-white">
-                        <i class="fas fa-search text-muted"></i>
-                    </span>
-                    <input type="search" 
-                           name="search" 
-                           class="form-control form-control-lg" 
-                           placeholder="Search by pet name, breed, or description..." 
-                           value="{{ search_query }}"
-                           aria-label="Search pets">
-                    <button type="submit" class="btn btn-primary">Search</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    {% if search_query %}
-    <!-- Search Results Header -->
-    <div class="alert alert-info mb-4">
-        <div class="d-flex justify-content-between align-items-center">
-            <div>
-                {% if total_pets > 0 %}
-                    <h5 class="mb-0">
-                        <i class="fas fa-search me-2"></i>
-                        Found {{ total_pets }} result{{ total_pets|pluralize }} for "{{ search_query }}"
-                    </h5>
-                {% else %}
-                    <h5 class="mb-0">
-                        <i class="fas fa-exclamation-circle me-2"></i>
-                        No pets found matching "{{ search_query }}"
-                    </h5>
-                {% endif %}
-            </div>
-            {% if search_query %}
-            <a href="{% url 'core:pets_list' %}" class="btn btn-outline-secondary btn-sm">
-                <i class="fas fa-times me-1"></i>Clear Search
-            </a>
-            {% endif %}
-        </div>
-    </div>
-    {% endif %}
-
-    <!-- View Toggle and Sort -->
-    <div class="row mb-4">
-        <div class="col-md-12">
-            <div class="d-flex justify-content-end align-items-center">
-                <div class="me-3">
-                    <form method="get" class="d-flex align-items-center">
-                        <input type="hidden" name="search" value="{{ search_query }}">
-                        <input type="hidden" name="species" value="{{ selected_species }}">
-                        <input type="hidden" name="gender" value="{{ selected_gender }}">
-                        <input type="hidden" name="age" value="{{ selected_age }}">
-                        <input type="hidden" name="is_vaccinated" value="{{ selected_vaccinated }}">
-                        <input type="hidden" name="is_neutered" value="{{ selected_neutered }}">
-                        <input type="hidden" name="view" value="{{ view_type }}">
-                        <label class="me-2">Sort by:</label>
-                        <select name="sort" class="form-select" onchange="this.form.submit()">
-                            <option value="-created_at" {% if selected_sort == '-created_at' %}selected{% endif %}>Newest First</option>
-                            <option value="name" {% if selected_sort == 'name' %}selected{% endif %}>Name (A-Z)</option>
-                            <option value="-name" {% if selected_sort == '-name' %}selected{% endif %}>Name (Z-A)</option>
-                            <option value="age" {% if selected_sort == 'age' %}selected{% endif %}>Age (Youngest)</option>
-                            <option value="-age" {% if selected_sort == '-age' %}selected{% endif %}>Age (Oldest)</option>
-                        </select>
-                    </form>
-                </div>
-                <div class="btn-group">
-                    <a href="?{% if search_query %}search={{ search_query }}&{% endif %}{% if selected_species %}species={{ selected_species }}&{% endif %}{% if selected_gender %}gender={{ selected_gender }}&{% endif %}{% if selected_age %}age={{ selected_age }}&{% endif %}{% if selected_vaccinated %}is_vaccinated={{ selected_vaccinated }}&{% endif %}{% if selected_neutered %}is_neutered={{ selected_neutered }}&{% endif %}{% if selected_sort %}sort={{ selected_sort }}&{% endif %}view=grid" class="btn btn-outline-primary {% if view_type == 'grid' %}active{% endif %}">
-                        <i class="fas fa-th-large"></i>
-                    </a>
-                    <a href="?{% if search_query %}search={{ search_query }}&{% endif %}{% if selected_species %}species={{ selected_species }}&{% endif %}{% if selected_gender %}gender={{ selected_gender }}&{% endif %}{% if selected_age %}age={{ selected_age }}&{% endif %}{% if selected_vaccinated %}is_vaccinated={{ selected_vaccinated }}&{% endif %}{% if selected_neutered %}is_neutered={{ selected_neutered }}&{% endif %}{% if selected_sort %}sort={{ selected_sort }}&{% endif %}view=list" class="btn btn-outline-primary {% if view_type == 'list' %}active{% endif %}">
-                        <i class="fas fa-list"></i>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Filters -->
-    <div class="card mb-4">
-        <div class="card-body">
-            <form method="get" class="row g-3">
-                <input type="hidden" name="search" value="{{ search_query }}">
-                <input type="hidden" name="sort" value="{{ selected_sort }}">
-                <input type="hidden" name="view" value="{{ view_type }}">
-                
-                <div class="col-md-2">
-                    <label for="species" class="form-label">Species</label>
-                    <select name="species" id="species" class="form-select">
-                        <option value="">All</option>
-                        {% for value, label in species_choices %}
-                        <option value="{{ value }}" {% if value == selected_species %}selected{% endif %}>{{ label }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <label for="gender" class="form-label">Gender</label>
-                    <select name="gender" id="gender" class="form-select">
-                        <option value="">All</option>
-                        <option value="male" {% if selected_gender == 'male' %}selected{% endif %}>Male</option>
-                        <option value="female" {% if selected_gender == 'female' %}selected{% endif %}>Female</option>
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <label for="age" class="form-label">Age</label>
-                    <select name="age" id="age" class="form-select">
-                        <option value="">All</option>
-                        <option value="puppy" {% if selected_age == 'puppy' %}selected{% endif %}>Puppy (0-1 year)</option>
-                        <option value="young" {% if selected_age == 'young' %}selected{% endif %}>Young (1-3 years)</option>
-                        <option value="adult" {% if selected_age == 'adult' %}selected{% endif %}>Adult (3+ years)</option>
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label">Health Status</label>
-                    <div>
-                        <div class="form-check form-check-inline">
-                            <input type="checkbox" name="is_vaccinated" value="1" class="form-check-input" id="is_vaccinated" {% if selected_vaccinated == '1' %}checked{% endif %}>
-                            <label class="form-check-label" for="is_vaccinated">Vaccinated</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input type="checkbox" name="is_neutered" value="1" class="form-check-input" id="is_neutered" {% if selected_neutered == '1' %}checked{% endif %}>
-                            <label class="form-check-label" for="is_neutered">Neutered</label>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-2 d-flex align-items-end">
-                    <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
-                </div>
-                <div class="col-md-2 d-flex align-items-end">
-                    <a href="{% url 'core:pets_list' %}" class="btn btn-outline-secondary w-100">Clear Filters</a>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Results Summary -->
-    <div class="mb-4">
-        <p class="text-muted">
-            Showing {{ pets.start_index }}-{{ pets.end_index }} of {{ total_pets }} pets
-            {% if search_query or selected_species or selected_gender or selected_age or selected_vaccinated or selected_neutered %}
-            (filtered results)
-            {% endif %}
-        </p>
-    </div>
-
-    <!-- Pet List -->
-    {% if view_type == 'grid' %}
-    <div class="row">
-        {% for pet in pets %}
-        <div class="col-md-4 mb-4">
-            <div class="card h-100">
-                <img src="{{ pet.photo.url }}" class="card-img-top" alt="{{ pet.name }}" style="height: 250px; object-fit: cover;">
-                <div class="card-body">
-                    <h5 class="card-title">{{ pet.name }}</h5>
-                    <p class="card-text">
-                        <small class="text-muted">
-                            <i class="fas fa-paw me-1"></i> {{ pet.get_species_display }}<br>
-                            <i class="fas fa-venus-mars me-1"></i> {{ pet.get_gender_display }}<br>
-                            <i class="fas fa-birthday-cake me-1"></i> {{ pet.age }} years old
-                        </small>
-                    </p>
-                    <p class="card-text">{{ pet.description|truncatewords:20 }}</p>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <a href="#" class="btn btn-primary">View Details</a>
-                        <div>
-                            {% if pet.is_vaccinated %}
-                            <span class="badge bg-success"><i class="fas fa-syringe"></i> Vaccinated</span>
-                            {% endif %}
-                            {% if pet.is_neutered %}
-                            <span class="badge bg-info"><i class="fas fa-check"></i> Neutered</span>
+<div class="container py-5">
+    {% if user.is_authenticated %}
+        <h2 class="mb-4">Available Pets</h2>
+        {% if pets %}
+            <div class="row">
+                {% for pet in pets %}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-img-top-container">
+                            {% if pet.photo %}
+                                <img src="{{ pet.photo.url }}" class="card-img-top" alt="{{ pet.name }}">
+                            {% else %}
+                                <div class="no-photo-placeholder">
+                                    <i class="fas fa-paw"></i>
+                                </div>
                             {% endif %}
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        {% endfor %}
-    </div>
-    {% else %}
-    <div class="list-view">
-        {% for pet in pets %}
-        <div class="card mb-3">
-            <div class="row g-0">
-                <div class="col-md-4">
-                    <img src="{{ pet.photo.url }}" class="img-fluid rounded-start" alt="{{ pet.name }}" style="height: 100%; object-fit: cover;">
-                </div>
-                <div class="col-md-8">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between">
-                            <h5 class="card-title">{{ pet.name }}</h5>
-                            <div>
+                        <div class="card-body">
+                            <h3 class="card-title">{{ pet.name }}</h3>
+                            <p class="text-muted">{{ pet.breed }} • {{ pet.age }} years old</p>
+                            <div class="mb-3">
+                                <span class="badge bg-primary">{{ pet.get_species_display }}</span>
+                                <span class="badge bg-info">{{ pet.get_gender_display }}</span>
                                 {% if pet.is_vaccinated %}
-                                <span class="badge bg-success"><i class="fas fa-syringe"></i> Vaccinated</span>
+                                    <span class="badge bg-success">Vaccinated</span>
                                 {% endif %}
                                 {% if pet.is_neutered %}
-                                <span class="badge bg-info"><i class="fas fa-check"></i> Neutered</span>
+                                    <span class="badge bg-success">Neutered</span>
                                 {% endif %}
                             </div>
+                            <p class="card-text">{{ pet.description|truncatewords:30 }}</p>
+                            <a href="{% url 'core:adoption_apply' pet.id %}" class="btn btn-primary">
+                                <i class="fas fa-heart me-2"></i>Adopt Me
+                            </a>
                         </div>
-                        <p class="card-text">
-                            <small class="text-muted">
-                                <i class="fas fa-paw me-1"></i> {{ pet.get_species_display }} |
-                                <i class="fas fa-venus-mars me-1"></i> {{ pet.get_gender_display }} |
-                                <i class="fas fa-birthday-cake me-1"></i> {{ pet.age }} years old
-                            </small>
-                        </p>
-                        <p class="card-text">{{ pet.description|truncatewords:50 }}</p>
-                        <p class="card-text"><small class="text-muted">Added {{ pet.created_at|timesince }} ago</small></p>
-                        <a href="#" class="btn btn-primary">View Details</a>
                     </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            {% if pets.has_other_pages %}
+            <nav aria-label="Page navigation" class="mt-4">
+                <ul class="pagination justify-content-center">
+                    {% if pets.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ pets.previous_page_number }}">Previous</a>
+                    </li>
+                    {% endif %}
+                    
+                    {% for num in pets.paginator.page_range %}
+                    <li class="page-item {% if pets.number == num %}active{% endif %}">
+                        <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                    </li>
+                    {% endfor %}
+                    
+                    {% if pets.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ pets.next_page_number }}">Next</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+        {% else %}
+            <div class="alert alert-info">
+                No pets available for adoption at the moment.
+            </div>
+        {% endif %}
+    {% else %}
+        <div class="text-center py-5">
+            <div class="login-required-card">
+                <i class="fas fa-lock fa-4x text-primary mb-4"></i>
+                <h2>Sign In Required</h2>
+                <p class="lead text-muted mb-4">Please sign in or create an account to view our available pets.</p>
+                <div class="d-flex justify-content-center gap-3">
+                    <a href="{% url 'accounts:login' %}?next={{ request.path }}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                    </a>
+                    <a href="{% url 'accounts:signup' %}?next={{ request.path }}" class="btn btn-outline-primary btn-lg">
+                        <i class="fas fa-user-plus me-2"></i>Create Account
+                    </a>
                 </div>
             </div>
         </div>
-        {% endfor %}
-    </div>
-    {% endif %}
-
-    {% if not pets %}
-    <div class="text-center">
-        <p class="lead">No pets found matching your criteria.</p>
-    </div>
-    {% endif %}
-
-    <!-- Pagination -->
-    {% if pets.paginator.num_pages > 1 %}
-    <nav aria-label="Page navigation" class="mt-4">
-        <ul class="pagination justify-content-center">
-            {% if pets.has_previous %}
-            <li class="page-item">
-                <a class="page-link" href="?{% if search_query %}search={{ search_query }}&{% endif %}{% if selected_species %}species={{ selected_species }}&{% endif %}{% if selected_gender %}gender={{ selected_gender }}&{% endif %}{% if selected_age %}age={{ selected_age }}&{% endif %}{% if selected_vaccinated %}is_vaccinated={{ selected_vaccinated }}&{% endif %}{% if selected_neutered %}is_neutered={{ selected_neutered }}&{% endif %}{% if selected_sort %}sort={{ selected_sort }}&{% endif %}{% if view_type %}view={{ view_type }}&{% endif %}page={{ pets.previous_page_number }}">Previous</a>
-            </li>
-            {% endif %}
-
-            {% for num in pets.paginator.page_range %}
-            {% if num == pets.number %}
-            <li class="page-item active"><span class="page-link">{{ num }}</span></li>
-            {% elif num > pets.number|add:'-3' and num < pets.number|add:'3' %}
-            <li class="page-item">
-                <a class="page-link" href="?{% if search_query %}search={{ search_query }}&{% endif %}{% if selected_species %}species={{ selected_species }}&{% endif %}{% if selected_gender %}gender={{ selected_gender }}&{% endif %}{% if selected_age %}age={{ selected_age }}&{% endif %}{% if selected_vaccinated %}is_vaccinated={{ selected_vaccinated }}&{% endif %}{% if selected_neutered %}is_neutered={{ selected_neutered }}&{% endif %}{% if selected_sort %}sort={{ selected_sort }}&{% endif %}{% if view_type %}view={{ view_type }}&{% endif %}page={{ num }}">{{ num }}</a>
-            </li>
-            {% endif %}
-            {% endfor %}
-
-            {% if pets.has_next %}
-            <li class="page-item">
-                <a class="page-link" href="?{% if search_query %}search={{ search_query }}&{% endif %}{% if selected_species %}species={{ selected_species }}&{% endif %}{% if selected_gender %}gender={{ selected_gender }}&{% endif %}{% if selected_age %}age={{ selected_age }}&{% endif %}{% if selected_vaccinated %}is_vaccinated={{ selected_vaccinated }}&{% endif %}{% if selected_neutered %}is_neutered={{ selected_neutered }}&{% endif %}{% if selected_sort %}sort={{ selected_sort }}&{% endif %}{% if view_type %}view={{ view_type }}&{% endif %}page={{ pets.next_page_number }}">Next</a>
-            </li>
-            {% endif %}
-        </ul>
-    </nav>
     {% endif %}
 </div>
 
 <style>
-    .list-view .card img {
-        max-height: 300px;
-    }
-    @media (max-width: 768px) {
-        .list-view .card img {
-            height: 200px !important;
-        }
-    }
-    .alert-info {
-        background-color: #e3f2fd;
-        border-color: #90caf9;
-        color: #0d47a1;
-    }
-    .input-group-text {
-        border-right: none;
-    }
-    .form-control {
-        border-left: none;
-    }
-    .form-control:focus {
-        border-color: #ced4da;
-        box-shadow: none;
-    }
-    .form-control:focus + .input-group-text {
-        border-color: #ced4da;
-    }
+.card {
+    transition: transform 0.3s;
+    border-radius: 1rem;
+    border: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.card-img-top-container {
+    height: 250px;
+    overflow: hidden;
+    border-top-left-radius: 1rem;
+    border-top-right-radius: 1rem;
+}
+
+.card-img-top {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.no-photo-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
+}
+
+.no-photo-placeholder i {
+    font-size: 4rem;
+    color: #bdbdbd;
+}
+
+.badge {
+    margin-right: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+}
+
+.login-required-card {
+    background: white;
+    padding: 3rem;
+    border-radius: 1rem;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.card-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #2E7D32;
+    margin-bottom: 0.5rem;
+}
+
+.btn-primary {
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    border-radius: 0.5rem;
+    background: linear-gradient(135deg, #2E7D32 0%, #1B5E20 100%);
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(46,125,50,0.3);
+    background: linear-gradient(135deg, #1B5E20 0%, #2E7D32 100%);
+}
 </style>
 {% endblock %} 

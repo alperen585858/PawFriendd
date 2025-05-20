@@ -1,30 +1,44 @@
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
-from .auth import signup_user, signin_user, signout_user, auth_required
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
 import json
 
 @csrf_exempt
 @require_http_methods(["POST"])
 def signup(request):
     """
-    Handle user signup
+    Handle user signup using Django's auth system
     """
     try:
         data = json.loads(request.body)
         email = data.get('email')
         password = data.get('password')
-        metadata = data.get('metadata', {})
 
         if not email or not password:
             return JsonResponse({
                 'error': 'Email and password are required'
             }, status=400)
 
-        response = signup_user(email, password, metadata)
+        if User.objects.filter(email=email).exists():
+            return JsonResponse({
+                'error': 'Email already exists'
+            }, status=400)
+
+        user = User.objects.create_user(
+            username=email,
+            email=email,
+            password=password
+        )
+
         return JsonResponse({
             'message': 'User created successfully',
-            'data': response
+            'data': {
+                'id': user.id,
+                'email': user.email
+            }
         })
     except Exception as e:
         return JsonResponse({
@@ -35,7 +49,7 @@ def signup(request):
 @require_http_methods(["POST"])
 def signin(request):
     """
-    Handle user signin
+    Handle user signin using Django's auth system
     """
     try:
         data = json.loads(request.body)
@@ -47,11 +61,21 @@ def signin(request):
                 'error': 'Email and password are required'
             }, status=400)
 
-        response = signin_user(email, password)
-        return JsonResponse({
-            'message': 'User signed in successfully',
-            'data': response
-        })
+        user = authenticate(request, username=email, password=password)
+        
+        if user is not None:
+            login(request, user)
+            return JsonResponse({
+                'message': 'User signed in successfully',
+                'data': {
+                    'id': user.id,
+                    'email': user.email
+                }
+            })
+        else:
+            return JsonResponse({
+                'error': 'Invalid credentials'
+            }, status=401)
     except Exception as e:
         return JsonResponse({
             'error': str(e)
@@ -59,21 +83,13 @@ def signin(request):
 
 @csrf_exempt
 @require_http_methods(["POST"])
-@auth_required
+@login_required
 def signout(request):
     """
-    Handle user signout
+    Handle user signout using Django's auth system
     """
     try:
-        auth_header = request.headers.get('Authorization')
-        token = auth_header.split(' ')[1] if auth_header else None
-
-        if not token:
-            return JsonResponse({
-                'error': 'No authentication token provided'
-            }, status=401)
-
-        signout_user(token)
+        logout(request)
         return JsonResponse({
             'message': 'User signed out successfully'
         })
@@ -84,14 +100,18 @@ def signout(request):
 
 @csrf_exempt
 @require_http_methods(["GET"])
-@auth_required
+@login_required
 def me(request):
     """
-    Get current user info
+    Get current user info using Django's auth system
     """
     try:
         return JsonResponse({
-            'user': request.user
+            'user': {
+                'id': request.user.id,
+                'email': request.user.email,
+                'username': request.user.username
+            }
         })
     except Exception as e:
         return JsonResponse({

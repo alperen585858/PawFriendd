@@ -24,7 +24,7 @@ class Pet(models.Model):
     health_status = models.TextField(verbose_name='Health Status')
     is_vaccinated = models.BooleanField(default=False, verbose_name='Vaccinated')
     is_neutered = models.BooleanField(default=False, verbose_name='Neutered')
-    photo = models.ImageField(upload_to='pets/', verbose_name='Photo')
+    photo = models.ImageField(upload_to='pets/', verbose_name='Photo', null=True, blank=True)
     status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='available', verbose_name='Status')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

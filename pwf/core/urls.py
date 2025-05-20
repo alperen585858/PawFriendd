@@ -1,17 +1,13 @@
 from django.urls import path
-from . import views_supabase as views
-from . import views_auth
+from . import views
 
 app_name = 'core'
 
 urlpatterns = [
     path('', views.home, name='home'),
     path('our-pets/', views.pets_list, name='pets_list'),
+    path('adoption/', views.adoption_info, name='adoption_info'),
+    path('adoption/apply/<int:pet_id>/', views.adoption_apply, name='adoption_apply'),
+    path('adoption/applications/', views.adoption_applications, name='adoption_applications'),
     path('api/pets/', views.pet_crud, name='pet_crud'),
-    
-    # Authentication endpoints
-    path('api/auth/signup/', views_auth.signup, name='signup'),
-    path('api/auth/signin/', views_auth.signin, name='signin'),
-    path('api/auth/signout/', views_auth.signout, name='signout'),
-    path('api/auth/me/', views_auth.me, name='me'),
 ] 

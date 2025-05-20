@@ -1,0 +1,163 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow-sm">
+                <div class="card-body p-5">
+                    <h1 class="text-center mb-4">Adoption Application</h1>
+                    
+                    <div class="pet-info mb-4">
+                        <div class="row align-items-center">
+                            <div class="col-md-4">
+                                {% if pet.photo %}
+                                    <img src="{{ pet.photo.url }}" alt="{{ pet.name }}" class="img-fluid rounded pet-photo">
+                                {% else %}
+                                    <div class="no-photo-placeholder rounded">
+                                        <i class="fas fa-paw"></i>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-8">
+                                <h3>{{ pet.name }}</h3>
+                                <p class="text-muted">{{ pet.breed }} • {{ pet.age }} years old</p>
+                                <div class="pet-tags">
+                                    <span class="badge bg-primary">{{ pet.get_species_display }}</span>
+                                    <span class="badge bg-info">{{ pet.get_gender_display }}</span>
+                                    {% if pet.is_vaccinated %}
+                                    <span class="badge bg-success">Vaccinated</span>
+                                    {% endif %}
+                                    {% if pet.is_neutered %}
+                                    <span class="badge bg-success">Neutered</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form method="POST" class="adoption-form">
+                        {% csrf_token %}
+                        
+                        <div class="form-group mb-3">
+                            <label for="full_name" class="form-label">Full Name *</label>
+                            <input type="text" class="form-control" id="full_name" name="full_name" required>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="email" class="form-label">Email Address *</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="phone" class="form-label">Phone Number *</label>
+                            <input type="tel" class="form-control" id="phone" name="phone" required>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="address" class="form-label">Home Address *</label>
+                            <textarea class="form-control" id="address" name="address" rows="3" required></textarea>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="has_pets" name="has_pets">
+                                <label class="form-check-label" for="has_pets">Do you have other pets?</label>
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-3" id="current_pets_group" style="display: none;">
+                            <label for="current_pets" class="form-label">Please describe your current pets</label>
+                            <textarea class="form-control" id="current_pets" name="current_pets" rows="3"></textarea>
+                        </div>
+
+                        <div class="form-group mb-4">
+                            <label for="reason" class="form-label">Why would you like to adopt this pet? *</label>
+                            <textarea class="form-control" id="reason" name="reason" rows="4" required></textarea>
+                        </div>
+
+                        <div class="form-check mb-4">
+                            <input type="checkbox" class="form-check-input" id="terms" required>
+                            <label class="form-check-label" for="terms">
+                                I understand that submitting this application does not guarantee adoption and agree to the adoption terms and conditions.
+                            </label>
+                        </div>
+
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-paper-plane me-2"></i>Submit Application
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('has_pets').addEventListener('change', function() {
+    const currentPetsGroup = document.getElementById('current_pets_group');
+    currentPetsGroup.style.display = this.checked ? 'block' : 'none';
+});
+</script>
+
+<style>
+.pet-tags .badge {
+    margin-right: 0.5rem;
+    padding: 0.5rem 0.75rem;
+}
+
+.adoption-form label {
+    font-weight: 500;
+    color: #333;
+}
+
+.adoption-form .form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(76, 175, 80, 0.25);
+}
+
+.pet-photo {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.no-photo-placeholder {
+    width: 100%;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.no-photo-placeholder i {
+    font-size: 4rem;
+    color: #bdbdbd;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #2E7D32 0%, #1B5E20 100%);
+    border: none;
+    padding: 1rem 2rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #1B5E20 0%, #2E7D32 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(46,125,50,0.3);
+}
+
+.form-check-input:checked {
+    background-color: #2E7D32;
+    border-color: #2E7D32;
+}
+</style>
+{% endblock %} 

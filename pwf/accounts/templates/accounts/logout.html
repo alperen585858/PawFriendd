@@ -1,0 +1,27 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <div class="logo">
+                <i class="fas fa-paw"></i>
+            </div>
+            <h2>Logged Out</h2>
+            <p>You have been successfully logged out.</p>
+        </div>
+
+        <div class="text-center mt-4">
+            <p>Thank you for using PawFriend!</p>
+            <a href="{% url 'accounts:login' %}" class="btn-submit d-inline-block mt-3">
+                <i class="fas fa-sign-in-alt me-2"></i>Log In Again
+            </a>
+        </div>
+
+        <div class="auth-footer">
+            <p>Return to <a href="{% url 'core:home' %}">Home Page</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %} 
