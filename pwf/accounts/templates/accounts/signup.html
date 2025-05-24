@@ -13,26 +13,6 @@
             <p>Join PawFriend and find your perfect companion</p>
         </div>
 
-        <div class="social-login">
-            <div class="d-flex justify-content-center gap-3">
-                <a href="#" class="social-btn google">
-                    <i class="fab fa-google"></i>
-                    <span>Google</span>
-                </a>
-                <a href="#" class="social-btn facebook">
-                    <i class="fab fa-facebook-f"></i>
-                    <span>Facebook</span>
-                </a>
-                <a href="#" class="social-btn apple">
-                    <i class="fab fa-apple"></i>
-                    <span>Apple</span>
-                </a>
-            </div>
-            <div class="divider">
-                <span>or register with email</span>
-            </div>
-        </div>
-
         <form class="auth-form" method="POST">
             {% csrf_token %}
             
@@ -47,28 +27,74 @@
             <div class="form-group">
                 <label for="username">Username</label>
                 {% render_field form.username class="form-control" %}
+                {% for error in form.username.errors %}
+                    <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
             </div>
 
             <div class="form-group">
                 <label for="email">Email</label>
                 {% render_field form.email class="form-control" %}
+                {% for error in form.email.errors %}
+                    <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
             </div>
 
             <div class="form-group">
                 <label for="password1">Password</label>
                 {% render_field form.password1 class="form-control" %}
+                {% for error in form.password1.errors %}
+                    <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
             </div>
 
             <div class="form-group">
                 <label for="password2">Confirm Password</label>
                 {% render_field form.password2 class="form-control" %}
+                {% for error in form.password2.errors %}
+                    <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
             </div>
 
-            <div class="form-check mb-4">
-                <input type="checkbox" class="form-check-input" id="terms" required>
-                <label class="form-check-label" for="terms">
-                    I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
-                </label>
+            <div class="form-group mb-4" style="margin-top: 10px;">
+                <div style="font-size: 0.97rem; font-weight: 400; margin-bottom: 6px;">
+                    I agree to the <a href="#" data-bs-toggle="modal" data-bs-target="#termsModal">Terms of Service</a> and <a href="#" data-bs-toggle="modal" data-bs-target="#privacyModal">Privacy Policy</a>
+                </div>
+                <div class="form-check">
+                    {% render_field form.terms class="form-check-input" style="margin:0;" %}
+                </div>
+                {% for error in form.terms.errors %}
+                    <div class="invalid-feedback d-block" style="margin-left:36px;">{{ error }}</div>
+                {% endfor %}
+            </div>
+
+            <!-- Terms of Service Modal -->
+            <div class="modal fade" id="termsModal" tabindex="-1" aria-labelledby="termsModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="termsModalLabel">Terms of Service</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body" style="text-align:left;">
+                    <p>By using PawFriend, you agree to abide by our rules and policies. You must provide accurate information, respect other users, and not misuse the platform. PawFriend reserves the right to update these terms at any time.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Privacy Policy Modal -->
+            <div class="modal fade" id="privacyModal" tabindex="-1" aria-labelledby="privacyModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="privacyModalLabel">Privacy Policy</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body" style="text-align:left;">
+                    <p>Your privacy is important to us. We collect and use your data only to provide and improve our services. We do not share your personal information with third parties except as required by law.</p>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <button type="submit" class="btn-submit">
@@ -83,75 +109,5 @@
 </div>
 
 <style>
-.social-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    padding: 10px 20px;
-    border-radius: 8px;
-    text-decoration: none;
-    color: #fff;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    min-width: 120px;
-}
-
-.social-btn:hover {
-    transform: translateY(-2px);
-    color: #fff;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-}
-
-.social-btn.google {
-    background: #DB4437;
-}
-
-.social-btn.facebook {
-    background: #4267B2;
-}
-
-.social-btn.apple {
-    background: #000;
-}
-
-.social-btn i {
-    font-size: 1.2rem;
-}
-
-.social-btn span {
-    font-size: 0.9rem;
-}
-
-.divider {
-    margin: 2rem 0;
-    text-align: center;
-    position: relative;
-}
-
-.divider::before,
-.divider::after {
-    content: "";
-    position: absolute;
-    top: 50%;
-    width: 45%;
-    height: 1px;
-    background-color: #dee2e6;
-}
-
-.divider::before {
-    left: 0;
-}
-
-.divider::after {
-    right: 0;
-}
-
-.divider span {
-    background-color: white;
-    padding: 0 1rem;
-    color: #6c757d;
-    font-size: 0.9rem;
-}
 </style>
 {% endblock %} 

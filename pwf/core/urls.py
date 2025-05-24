@@ -10,4 +10,6 @@ urlpatterns = [
     path('adoption/apply/<int:pet_id>/', views.adoption_apply, name='adoption_apply'),
     path('adoption/applications/', views.adoption_applications, name='adoption_applications'),
     path('api/pets/', views.pet_crud, name='pet_crud'),
+    path('about-us/', views.about_us, name='about_us'),
+    path('contact/', views.contact, name='contact'),
 ] 

@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Pet, AdoptionApplication
+from .models import Pet, AdoptionApplication, Contact
 from django.db.models import Q
 from django.core.paginator import Paginator
 from django.http import JsonResponse
@@ -228,3 +228,28 @@ def adoption_applications(request):
     """View for listing user's adoption applications"""
     applications = AdoptionApplication.objects.filter(user=request.user).order_by('-created_at')
     return render(request, 'core/adoption/applications.html', {'applications': applications})
+
+def about_us(request):
+    """View for About Us page"""
+    return render(request, 'core/about_us.html')
+
+def contact(request):
+    """View for Contact page"""
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        subject = request.POST.get('subject')
+        message = request.POST.get('message')
+        
+        # Save the contact message to database
+        Contact.objects.create(
+            name=name,
+            email=email,
+            subject=subject,
+            message=message
+        )
+        
+        messages.success(request, 'Thank you for your message! We will get back to you soon.')
+        return redirect('core:contact')
+        
+    return render(request, 'core/contact.html')
