@@ -36,6 +36,7 @@
             {% for pet in pets %}
             <div class="col-md-4 mb-4">
                 <div class="card h-100 pet-card">
+                    {% if user.is_authenticated %}
                     <div class="card-img-container">
                         {% if pet.photo %}
                             <img src="{{ pet.photo.url }}" class="card-img-top" alt="{{ pet.name }}">
@@ -45,48 +46,50 @@
                             </div>
                         {% endif %}
                     </div>
-                    {% if user.is_authenticated %}
-                        <!-- Full content for authenticated users -->
-                        <div class="card-body">
+                    <div class="card-body">
+                        <h3 class="pet-name">{{ pet.name }}</h3>
+                        <p class="pet-info">{{ pet.breed }} • {{ pet.age }} years old</p>
+                        <div class="pet-badges mb-3">
+                            <span class="badge badge-species">{{ pet.species }}</span>
+                            <span class="badge badge-gender">{{ pet.gender }}</span>
+                            {% if pet.is_vaccinated %}
+                                <span class="badge badge-success">Vaccinated</span>
+                            {% endif %}
+                            {% if pet.is_neutered %}
+                                <span class="badge badge-success">Neutered</span>
+                            {% endif %}
+                        </div>
+                        <p class="pet-description">{{ pet.description|truncatewords:30 }}</p>
+                        <div class="mt-3">
+                            <a href="{% url 'core:adoption_apply' pet.id %}" class="btn btn-adopt w-100">
+                                <i class="fas fa-heart me-2"></i>Adopt Me
+                            </a>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="card-img-container">
+                        <div class="no-photo-placeholder">
+                            <i class="fas fa-paw"></i>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="pet-preview">
                             <h3 class="pet-name">{{ pet.name }}</h3>
-                            <p class="pet-info">{{ pet.breed }} • {{ pet.age }} years old</p>
+                            <p class="pet-info">{{ pet.breed }}</p>
                             <div class="pet-badges mb-3">
                                 <span class="badge badge-species">{{ pet.species }}</span>
-                                <span class="badge badge-gender">{{ pet.gender }}</span>
-                                {% if pet.is_vaccinated %}
-                                    <span class="badge badge-success">Vaccinated</span>
-                                {% endif %}
-                                {% if pet.is_neutered %}
-                                    <span class="badge badge-success">Neutered</span>
-                                {% endif %}
                             </div>
-                            <p class="pet-description">{{ pet.description|truncatewords:30 }}</p>
-                            <div class="mt-3">
-                                <a href="{% url 'core:adoption_apply' pet.id %}" class="btn btn-adopt w-100">
-                                    <i class="fas fa-heart me-2"></i>Adopt Me
-                                </a>
-                            </div>
-                        </div>
-                    {% else %}
-                        <!-- Limited content for non-authenticated users -->
-                        <div class="card-body">
-                            <div class="pet-preview">
-                                <h3 class="pet-name">{{ pet.name }}</h3>
-                                <p class="pet-info">{{ pet.breed }}</p>
-                                <div class="pet-badges mb-3">
-                                    <span class="badge badge-species">{{ pet.species }}</span>
-                                </div>
-                                <div class="blur-overlay">
-                                    <div class="preview-content">
-                                        <i class="fas fa-lock mb-3"></i>
-                                        <p class="preview-text">Sign in to view more details and adopt</p>
-                                        <a href="{% url 'accounts:login' %}?next={{ request.path }}" class="btn btn-light btn-sm">
-                                            <i class="fas fa-sign-in-alt me-2"></i>Sign In
-                                        </a>
-                                    </div>
+                            <div class="blur-overlay">
+                                <div class="preview-content">
+                                    <i class="fas fa-lock mb-3"></i>
+                                    <p class="preview-text">Sign in to view more details and adopt</p>
+                                    <a href="{% url 'accounts:login' %}?next={{ request.path }}" class="btn btn-light btn-sm">
+                                        <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                                    </a>
                                 </div>
                             </div>
                         </div>
+                    </div>
                     {% endif %}
                 </div>
             </div>

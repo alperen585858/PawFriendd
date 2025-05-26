@@ -124,8 +124,8 @@
                     <h5>Quick Links</h5>
                     <ul class="list-unstyled">
                         <li><a href="{% url 'core:pets_list' %}" class="text-light">Our Pets</a></li>
-                        <li><a href="#" class="text-light">Adoption Terms</a></li>
-                        <li><a href="#" class="text-light">FAQ</a></li>
+                        <li><a href="{% url 'core:adoption_info' %}" class="text-light">Adoption Terms</a></li>
+                        <li><a href="{% url 'core:adoption_info' %}#adoptionFAQ" class="text-light">FAQ</a></li>
                     </ul>
                 </div>
                 <div class="col-md-4">
@@ -138,7 +138,7 @@
             </div>
             <hr>
             <div class="text-center">
-                <p class="mb-0">&copy; 2024 PawFriend. All rights reserved.</p>
+                <p class="mb-0">&copy; 2025 PawFriend. All rights reserved.</p>
             </div>
         </div>
     </footer>

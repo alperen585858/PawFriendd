@@ -179,3 +179,6 @@ LOGGING = {
 LOGIN_URL = 'accounts:login'
 LOGIN_REDIRECT_URL = 'core:home'
 LOGOUT_REDIRECT_URL = 'core:home'
+
+REPLICATE_API_TOKEN = "r8_HepQOOY68kFq1nCKJwEytMzfxj7PJhF2daGcE"
+

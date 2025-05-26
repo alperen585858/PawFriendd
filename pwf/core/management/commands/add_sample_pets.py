@@ -17,7 +17,8 @@ class Command(BaseCommand):
                 'health_status': 'Excellent health, up to date on all vaccinations',
                 'is_vaccinated': True,
                 'is_neutered': True,
-                'status': 'available'
+                'status': 'available',
+                'photo': 'pets/luna.jpg',
             },
             {
                 'name': 'Max',
@@ -29,7 +30,8 @@ class Command(BaseCommand):
                 'health_status': 'Good health, regular check-ups',
                 'is_vaccinated': True,
                 'is_neutered': True,
-                'status': 'available'
+                'status': 'available',
+                'photo': 'pets/max.jpg',
             },
             {
                 'name': 'Bella',
@@ -41,7 +43,8 @@ class Command(BaseCommand):
                 'health_status': 'Excellent health, recently checked by vet',
                 'is_vaccinated': True,
                 'is_neutered': True,
-                'status': 'available'
+                'status': 'available',
+                'photo': 'pets/bella.jpg',
             },
             {
                 'name': 'Charlie',
@@ -53,7 +56,8 @@ class Command(BaseCommand):
                 'health_status': 'Good health, regular grooming required',
                 'is_vaccinated': True,
                 'is_neutered': True,
-                'status': 'available'
+                'status': 'available',
+                'photo': 'pets/charlie.jpg',
             },
             {
                 'name': 'Rocky',
@@ -65,8 +69,74 @@ class Command(BaseCommand):
                 'health_status': 'Good health, regular exercise needed',
                 'is_vaccinated': True,
                 'is_neutered': False,
-                'status': 'available'
-            }
+                'status': 'available',
+                'photo': 'pets/rocky.jpg',
+            },
+            {
+                'name': 'Milo',
+                'species': 'cat',
+                'breed': 'British Shorthair',
+                'age': 2,
+                'gender': 'male',
+                'description': 'Milo is a curious and playful British Shorthair who loves to chase toys.',
+                'health_status': 'Healthy, regular vet visits',
+                'is_vaccinated': True,
+                'is_neutered': True,
+                'status': 'available',
+                'photo': 'pets/milo.jpg',
+            },
+            {
+                'name': 'Coco',
+                'species': 'bird',
+                'breed': 'Parrot',
+                'age': 1,
+                'gender': 'female',
+                'description': 'Coco is a talkative parrot who loves to mimic sounds and interact with people.',
+                'health_status': 'Excellent health, loves seeds and fruits',
+                'is_vaccinated': False,
+                'is_neutered': False,
+                'status': 'available',
+                'photo': 'pets/coco.jpg',
+            },
+            {
+                'name': 'Buddy',
+                'species': 'dog',
+                'breed': 'Beagle',
+                'age': 5,
+                'gender': 'male',
+                'description': 'Buddy is a loyal Beagle who enjoys outdoor adventures and sniffing around.',
+                'health_status': 'Healthy, needs daily walks',
+                'is_vaccinated': True,
+                'is_neutered': True,
+                'status': 'available',
+                'photo': 'pets/buddy.jpg',
+            },
+            {
+                'name': 'Daisy',
+                'species': 'cat',
+                'breed': 'Maine Coon',
+                'age': 3,
+                'gender': 'female',
+                'description': 'Daisy is a gentle Maine Coon who loves to be brushed and petted.',
+                'health_status': 'Excellent health, regular grooming',
+                'is_vaccinated': True,
+                'is_neutered': True,
+                'status': 'available',
+                'photo': 'pets/daisy.jpg',
+            },
+            {
+                'name': 'Shadow',
+                'species': 'other',
+                'breed': 'Rabbit',
+                'age': 1,
+                'gender': 'male',
+                'description': 'Shadow is a shy but sweet rabbit who enjoys quiet environments.',
+                'health_status': 'Healthy, needs fresh vegetables daily',
+                'is_vaccinated': False,
+                'is_neutered': False,
+                'status': 'available',
+                'photo': 'pets/shadow.jpg',
+            },
         ]
 
         # Create pets
